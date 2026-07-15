@@ -1,9 +1,36 @@
 import LottieReact from "lottie-react";
 import registerLottieData from "../../assets/lottie/register.json";
+import { useContext } from "react";
+import AuthContext from "../../Context/AuthContext/AuthContext";
+
 
 const LottieComponent = LottieReact?.default || LottieReact;
 
 const Register = () => {
+
+  const { createUser } = useContext(AuthContext);
+
+  const handleRegister = (event) => {
+    event.preventDefault();
+    const form = event.target;
+    const email = form.email.value;
+    const password = form.password.value;
+    console.log(email, password);
+
+    createUser(email, password)
+      .then((userCredential) => {
+        // Signed in  
+      const user = userCredential.user;
+        console.log(user);
+        form.reset();
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+      }); 
+  };
+
   return (
     <div className="hero bg-base-200 min-h-screen">
       <div className="hero-content flex-col lg:flex-row-reverse">
@@ -17,16 +44,18 @@ const Register = () => {
         <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
           <h3 className="text-5xl font-bold ml-8 mt- 4">Register now!</h3>
           <div className="card-body">
-            <fieldset className="fieldset">
+            <form onSubmit={handleRegister} className="fieldset">
               <label className="label">Email</label>
-              <input type="email" className="input" placeholder="Email" />
+              <input type="email" name="email" className="input" placeholder="Email" />
               <label className="label">Password</label>
-              <input type="password" className="input" placeholder="Password" />
+              <input type="password" name="password" className="input" placeholder="Password" />
               <div>
                 <a className="link link-hover">Forgot password?</a>
               </div>
-              <button className="btn btn-neutral mt-4">Register</button>
-            </fieldset>
+              <button type="submit" className="btn btn-neutral mt-4">
+                Register
+              </button>
+            </form>
           </div>
         </div>
       </div>
